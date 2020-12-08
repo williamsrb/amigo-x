@@ -357,7 +357,8 @@ h1, h2, h3 {
     var validationMsg = modalIsNotValid()
     var currentPerson = getModalPerson()
     if (!validationMsg) {
-      const drawResult = draw(currentPerson)
+      var drawResult = draw(currentPerson)
+      drawResult = saveDraw(currentPerson, drawResult)
       storeDraw(drawResult)
       $('#amigox').addClass('hidden')
       showDraw(drawResult)
@@ -367,10 +368,10 @@ h1, h2, h3 {
     }
   }
   function checkPreviousDraw() {
-    let previousDraw = localStorage.getItem('previousDraw')
+    var previousDraw = localStorage.getItem('previousDraw')
     if (!previousDraw && document.cookie.indexOf('previousDraw') !== -1) {
-      const cookieValues = document.cookie.split(';')
-      const valuesFound = cookieValues.filter(cookieValue => cookieValue.indexOf('previousDraw=') !== -1)
+      var cookieValues = document.cookie.split(';')
+      var valuesFound = cookieValues.filter(cookieValue => cookieValue.indexOf('previousDraw=') !== -1)
       if (valuesFound && valuesFound.length > 0) {
         previousDraw = valuesFound[0].split('=')[1]
       }
@@ -382,7 +383,7 @@ h1, h2, h3 {
     localStorage.setItem('previousDraw', drawResult)
   }
   function showDraw(drawResult) {
-    const imgBadge = '&nbsp;<img class="card-badge" src="https://shields.io/badge/Amigo%20X-red">'
+    var imgBadge = '&nbsp;<img class="card-badge" src="https://shields.io/badge/Amigo%20X-red">'
     $('.material-card').not(`.${drawResult}`).attr('class', 'material-card Grey')
     $('.material-card img').not(`#${drawResult}`).css('filter', 'contrast(25%) brightness(160%) grayscale(100%)')
     $(`.material-card.${drawResult} .card-name`).append(imgBadge)
@@ -399,6 +400,7 @@ h1, h2, h3 {
     if (passIdx !== persIdx) return 'Senha inválida'
   }
   function getAllUnavailablePerson() {
+    var error
     var unavailable = []
     var bodyAll = {
       action: 'get', // String (get / set / getUnique / setUnique)
@@ -423,12 +425,11 @@ h1, h2, h3 {
     }, function (jqXHR, textStatus, errorThrown) {
 
       // Failure
-      var error = 'Falha ao obter resultados já salvos!\nInforme a falha ao criador do aplicativo'
+      error = 'Falha ao obter resultados já salvos!\nInforme a falha ao criador do aplicativo'
       alert(error)
       console.error({textStatus, errorThrown})
-      throw new Error(error)
     })
-
+    if (error) throw new Error(error)
     return unavailable
   }
   function saveDraw(currentPerson, drawResult) {
@@ -456,6 +457,7 @@ h1, h2, h3 {
         'time': now
       }
     }
+    var error
     
     sendToObjectRegistry(bodyTaken, false,
     function (responseData, textStatus, jqXHR) {
@@ -465,7 +467,7 @@ h1, h2, h3 {
       if (!responseData || Object.keys(responseData).length === 0) {
         // Try again
         drawResult = draw(currentPerson)
-        saveDraw(currentPerson, drawResult)
+        drawResult = saveDraw(currentPerson, drawResult)
       } else {
         console.log({responseData: responseData, textStatus: textStatus})
 
@@ -478,22 +480,21 @@ h1, h2, h3 {
         }, function (jqXHR, textStatus, errorThrown) {
 
           // Failure
-          var error = 'Falha ao salvar o resultado do sorteio!\nInforme a falha ao criador do aplicativo'
+          error = 'Falha ao salvar o resultado do sorteio!\nInforme a falha ao criador do aplicativo'
           alert(error)
           console.error({textStatus: textStatus, errorThrown: errorThrown})
-          throw new Error(error)
         })
 
       }
     }, function (jqXHR, textStatus, errorThrown) {
       
       // Failure
-      var error = 'Erro ao salvar o resultado do sorteio!\nInforme o erro ao criador do aplicativo'
+      error = 'Erro ao salvar o resultado do sorteio!\nInforme o erro ao criador do aplicativo'
       alert(error)
       console.error({textStatus: textStatus, errorThrown: errorThrown})
-      throw new Error(error)
     })
-
+    if (error) throw new Error(error)
+    return drawResult
   }
   function sendToObjectRegistry(data, async, successFn, failureFn) {
     var jsonContentType = 'application/json'
