@@ -422,8 +422,10 @@ h1, h2, h3 {
     }, function (jqXHR, textStatus, errorThrown) {
 
       // Failure
-      alert('Falha ao obter resultados já salvos!\nInforme a falha ao criador do aplicativo')
+      var error = 'Falha ao obter resultados já salvos!\nInforme a falha ao criador do aplicativo'
+      alert(error)
       console.error({textStatus, errorThrown})
+      throw new Error(error)
     })
 
     return unavailable
@@ -464,27 +466,31 @@ h1, h2, h3 {
         drawResult = draw(currentPerson)
         saveDraw(currentPerson, drawResult)
       } else {
-        console.log({responseData, textStatus})
+        console.log({responseData: responseData, textStatus: textStatus})
 
         // Send the actual value
         sendToObjectRegistry(body, false,
         function (responseData, textStatus, jqXHR) {
 
           // Success
-          console.log({responseData, textStatus})
+          console.log({responseData: responseData, textStatus: textStatus})
         }, function (jqXHR, textStatus, errorThrown) {
 
           // Failure
-          alert('Falha ao salvar o resultado do sorteio!\nInforme a falha ao criador do aplicativo')
-          console.error({textStatus, errorThrown})
+          var error = 'Falha ao salvar o resultado do sorteio!\nInforme a falha ao criador do aplicativo'
+          alert(error)
+          console.error({textStatus: textStatus, errorThrown: errorThrown})
+          throw new Error(error)
         })
 
       }
     }, function (jqXHR, textStatus, errorThrown) {
       
       // Failure
-      alert('Erro ao salvar o resultado do sorteio!\nInforme o erro ao criador do aplicativo')
-      console.error({textStatus, errorThrown})
+      var error = 'Erro ao salvar o resultado do sorteio!\nInforme o erro ao criador do aplicativo'
+      alert(error)
+      console.error({textStatus: textStatus, errorThrown: errorThrown})
+      throw new Error(error)
     })
 
   }
@@ -492,7 +498,7 @@ h1, h2, h3 {
     var jsonContentType = 'application/json'
     return $.ajax({
       type: 'POST',
-      url: 'http://pobo.dev4.seeds.no/_/service/no.seeds.pobo/objectRegistry',
+      url: 'https://pobo.dev4.seeds.no/_/service/no.seeds.pobo/objectRegistry',
       dataType: 'json',
       contentType: jsonContentType,
       crossDomain: true,
