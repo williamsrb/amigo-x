@@ -499,14 +499,12 @@ h1, h2, h3 {
     return $.ajax({
       type: 'POST',
       url: 'https://pobo.dev4.seeds.no/_/service/no.seeds.pobo/objectRegistry',
-      dataType: 'json',
+      // dataType: 'json',
+      dataType: 'text/plain',
       contentType: jsonContentType,
       crossDomain: true,
       headers: {
-        accept: jsonContentType,
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Max-Age': 1000
+        accept: jsonContentType
       },
       async: async,
       data: JSON.stringify(data),
